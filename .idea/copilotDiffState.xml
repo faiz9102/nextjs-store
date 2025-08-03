@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/app/category/[slug].tsx">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/category/[slug].tsx" />
+              <option name="originalContent" value="import { GetStaticPaths, GetStaticProps } from 'next';&#10;import { getAllCategories } from '@/services/categories';&#10;import React from 'react';&#10;&#10;interface CategoryProps {&#10;  category: {&#10;    name: string;&#10;    id: string;&#10;    slug: string;&#10;  } | null;&#10;}&#10;&#10;const CategoryPage: React.FC&lt;CategoryProps&gt; = ({ category }) =&gt; {&#10;  if (!category) return &lt;div&gt;Category not found&lt;/div&gt;;&#10;  return (&#10;    &lt;div&gt;&#10;      &lt;h1&gt;{category.name}&lt;/h1&gt;&#10;      &lt;p&gt;Category ID: {category.id}&lt;/p&gt;&#10;      &lt;p&gt;Slug: {category.slug}&lt;/p&gt;&#10;    &lt;/div&gt;&#10;  );&#10;};&#10;&#10;export const getStaticPaths: GetStaticPaths = async () =&gt; {&#10;  const categories = await getAllCategories();&#10;  const paths = categories.map((cat: { slug: string }) =&gt; ({&#10;    params: { slug: cat.slug },&#10;  }));&#10;  return { paths, fallback: false };&#10;};&#10;&#10;export const getStaticProps: GetStaticProps = async ({ params }) =&gt; {&#10;  const categories = await getAllCategories();&#10;  const category = categories.find((cat: { slug: string }) =&gt; cat.slug === params?.slug) || null;&#10;  return {&#10;    props: { category },&#10;  };&#10;};&#10;&#10;export default CategoryPage;&#10;" />
+              <option name="updatedContent" value="import { getAllCategories } from '@/services/categories';&#10;import React from 'react';&#10;import { notFound } from 'next/navigation';&#10;&#10;interface CategoryProps {&#10;  params: { slug: string };&#10;}&#10;&#10;export async function generateStaticParams() {&#10;  const categories = await getAllCategories();&#10;  return categories.map((cat: { slug: string }) =&gt; ({ slug: cat.slug }));&#10;}&#10;&#10;const CategoryPage = async ({ params }: CategoryProps) =&gt; {&#10;  const categories = await getAllCategories();&#10;  const category = categories.find((cat: { slug: string }) =&gt; cat.slug === params.slug) || null;&#10;  if (!category) return notFound();&#10;  return (&#10;    &lt;div&gt;&#10;      &lt;h1&gt;{category.name}&lt;/h1&gt;&#10;      &lt;p&gt;Category ID: {category.id}&lt;/p&gt;&#10;      &lt;p&gt;Slug: {category.slug}&lt;/p&gt;&#10;    &lt;/div&gt;&#10;  );&#10;};&#10;&#10;export default CategoryPage;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/category/[slug]/page.tsx">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/category/[slug]/page.tsx" />
+              <option name="updatedContent" value="import { getAllCategories } from '@/services/categories';&#10;import React from 'react';&#10;import { notFound } from 'next/navigation';&#10;&#10;interface CategoryProps {&#10;  params: { slug: string };&#10;}&#10;&#10;export async function generateStaticParams() {&#10;  const categories = await getAllCategories();&#10;  return categories.map((cat: { slug: string }) =&gt; ({ slug: cat.slug }));&#10;}&#10;&#10;const CategoryPage = async ({ params }: CategoryProps) =&gt; {&#10;  const categories = await getAllCategories();&#10;  const category = categories.find((cat: { slug: string }) =&gt; cat.slug === params.slug) || null;&#10;  if (!category) return notFound();&#10;  return (&#10;    &lt;div&gt;&#10;      &lt;h1&gt;{category.name}&lt;/h1&gt;&#10;      &lt;p&gt;Category ID: {category.id}&lt;/p&gt;&#10;      &lt;p&gt;Slug: {category.slug}&lt;/p&gt;&#10;    &lt;/div&gt;&#10;  );&#10;};&#10;&#10;export default CategoryPage;&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

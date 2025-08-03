@@ -1,0 +1,4 @@
+{
+  "schema": "http://magento.local/graphql",
+  "documents": "graphql/**/*.graphql"
+}

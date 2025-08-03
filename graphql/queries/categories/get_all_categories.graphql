@@ -1,0 +1,9 @@
+query {
+    categories {
+        items {
+            children {
+                name
+            }
+        }
+    }
+}

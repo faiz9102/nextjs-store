@@ -1,8 +1,24 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
+type GraphQLResponse<T> = {
+    data?: T;
+    errors?: GraphQLError[];
+};
+
+type GraphQLError = {
+    message: string;
+    locations?: { line: number; column: number }[];
+    path?: (string | number)[];
+    extensions?: Record<string, any>;
+};
+
 const client = new ApolloClient({
     uri: process.env.NEXT_PUBLIC_MAGENTO_GRAPHQL_ENDPOINT,
     cache: new InMemoryCache(),
 });
 
-export default client;
+export {
+    client,
+    type GraphQLError,
+    type GraphQLResponse
+};

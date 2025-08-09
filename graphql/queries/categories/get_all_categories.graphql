@@ -2,7 +2,9 @@ query {
     categories {
         items {
             children {
+                id : uid
                 name
+                url_key
             }
         }
     }

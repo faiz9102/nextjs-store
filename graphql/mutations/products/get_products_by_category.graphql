@@ -1,0 +1,13 @@
+query GetProductsByCategory($cat: String!) {
+    products(filter: { category_id: { eq: $cat } }) {
+        total_count
+        items {
+            name
+            sku
+            categories {
+                name
+                uid
+            }
+        }
+    }
+}

@@ -31,15 +31,15 @@ export default async function RootLayout({
         <div
             className="
             fixed
-            top-1
+            top-3
             left-1/2
             -translate-x-1/2
             w-[98%]
             min-h-[3.75rem]
             rounded-2xl
             bg-blue-400/10
-            backdrop-blur-[100%]
-            z-[100]
+            backdrop-blur-[10%]
+            z-50
             flex
             justify-between
             items-center
@@ -49,7 +49,7 @@ export default async function RootLayout({
         >
             <Navbar />
         </div>
-        <main className="pt-20 z-0">
+        <main className="static">
             {children}
         </main>
         </body>

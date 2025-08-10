@@ -43,14 +43,14 @@ export default async function RootLayout({
             flex
             justify-between
             items-center
-            ps-25
-            pe-25
+            px-25
+            z-50
           "
             style={{zIndex: "9999"}}
         >
             <Navbar/>
         </div>
-        <main className="static min-h-[80dvh]">
+        <main className="min-h-[80dvh]">
             {children}
         </main>
         <Footer/>

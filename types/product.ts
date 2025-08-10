@@ -58,6 +58,7 @@ export type ProductFilter = {
     price?: FilterOperatorNumber;
     visibility?: FilterOperatorNumber;
     status?: FilterOperatorNumber;
+    url_key?: FilterOperatorString;
     custom_attributes?: Record<string, FilterOperatorString | FilterOperatorNumber>;
 
     pageSize?: number;

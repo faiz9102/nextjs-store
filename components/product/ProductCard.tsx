@@ -1,6 +1,5 @@
 import Image from "next/image";
-
-
+import { type ProductItem } from "@/types/product";
 
 export default function ProductCard({ product }: { product: ProductItem }) {
     const price = product.price_range.minimum_price.final_price;
@@ -10,11 +9,11 @@ export default function ProductCard({ product }: { product: ProductItem }) {
         )?.values ?? [];
 
     return (
-        <div className="flex flex-col items-start w-[240px] hover:shadow-lg transition-shadow duration-200 ease-in-out p-4">
+        <div className="flex flex-col items-start w-[250px] hover:shadow-lg transition-shadow duration-200 ease-in-out p-4">
             {/* Product Image */}
             <a
                 href={`/product/${product.url_key}`}
-                className="block w-full h-[300px] rounded-lg overflow-hidden "
+                className="block w-full h-[300px] rounded-lg overflow-hidden relative z-10"
             >
                 {product.small_image?.url ? (
                     <Image
@@ -46,7 +45,7 @@ export default function ProductCard({ product }: { product: ProductItem }) {
                         <div
                             key={idx}
                             title={swatch.label}
-                            className="w-6 h-6 rounded-full border border-gray-300 overflow-hidden"
+                            className="w-6 h-6 rounded-full border border-gray-300 overflow-hidden z-10"
                             style={{
                                 backgroundColor: swatch.swatch_data?.value || "transparent",
                             }}

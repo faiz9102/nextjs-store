@@ -88,4 +88,43 @@ const getFilteredProducts = async (filters: ProductFilter): Promise<ProductItem[
     }
 };
 
-export { getProductsByCategory, getFilteredProducts };
+const getProductByUrlKey = async (url_key: string): Promise<ProductItem | null> => {
+    "use cache";
+    const queryString = print(GET_FILTERED_PRODUCTS_QUERY);
+
+    const filter: ProductFilter = {
+        "url_key":  { eq: url_key }
+    }
+
+    try {
+        const res = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                query: queryString,
+                variables: { filter: filter },
+            }),
+        });
+
+        if (!res.ok) {
+            console.error("Error fetching product:", res.statusText , "   " ,url_key);
+            return null;
+        }
+
+        const { data, errors }: GraphQLResponse<ProductsResponse> = await res.json();
+
+        if (errors) {
+            console.error("GraphQL errors:", errors);
+            return null;
+        }
+
+        return data?.products?.items[0] ?? null;
+    } catch (error) {
+        console.error("Error fetching filtered products:", error);
+        return null;
+    }
+};
+
+export { getProductsByCategory, getFilteredProducts, getProductByUrlKey};

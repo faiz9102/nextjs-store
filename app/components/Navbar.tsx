@@ -1,4 +1,3 @@
-'use cache'
 
 import Link from "next/link";
 import {
@@ -7,6 +6,7 @@ import {
     NavigationMenuLink,
     NavigationMenuList
 } from "@/components/ui/navigation-menu";
+import { Input } from "@/components/ui/input"
 import {getAllCategories} from "@/services/categories";
 
 export default async function Navbar() {
@@ -29,7 +29,13 @@ export default async function Navbar() {
                     ))}
                 </NavigationMenuList>
             </NavigationMenu>
-            <div>search</div>
+            <div>
+                <Input
+                    type="search"
+                    placeholder="Search"
+                    className="w-full max-w-sm bg-transparent"
+                />
+            </div>
         </>
     );
 }

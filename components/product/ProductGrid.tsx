@@ -15,8 +15,8 @@ export default async function ProductGrid({ filter }: ProductGridProps) {
             className="
                 grid
                 grid-cols-2 gap-y-10
-                sm:grid-cols-3
-                md:grid-cols-4
+                sm:grid-cols-2
+                md:grid-cols-3
                 xl:grid-cols-5
                 justify-items-center
             "

@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 import GET_FILTERED_PRODUCTS_QUERY from "@/graphql/queries/products/get_filtered_products.graphql";
 import { GraphQLResponse } from "@/types/apollo";
 import { ProductItem } from "@/types/product";

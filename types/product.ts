@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 type ProductImage = { url: string; label?: string };
 type Price = { value: number; currency: string };
 

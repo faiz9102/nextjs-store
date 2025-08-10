@@ -37,7 +37,7 @@ export default async function Page() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {featuredCategories.map((category) => (
                         <Link
-                            href={`/category/${category.slug}`}
+                            href={`/category/${category.url_key}`}
                             key={category.uid}
                             className="group block bg-white hover:bg-gray-50 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
                         >

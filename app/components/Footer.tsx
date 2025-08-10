@@ -1,4 +1,7 @@
-// components/layout/Footer.tsx
+import { Instagram } from 'lucide-react';
+import { Facebook } from 'lucide-react';
+import { Youtube } from 'lucide-react';
+
 export default function Footer() {
     return (
         <footer className="bg-white/60 backdrop-blur-lg border-t border-gray-200 mt-16">
@@ -40,9 +43,9 @@ export default function Footer() {
                 <div>
                     <h3 className="font-semibold text-gray-900 mb-4">Follow Us</h3>
                     <div className="flex space-x-4">
-                        <a href="#" aria-label="Instagram" className="hover:text-gray-900">📷</a>
-                        <a href="#" aria-label="Twitter" className="hover:text-gray-900">🐦</a>
-                        <a href="#" aria-label="Facebook" className="hover:text-gray-900">📘</a>
+                        <a href="#" aria-label="Instagram" className="hover:text-gray-900"><Instagram /></a>
+                        <a href="#" aria-label="Twitter" className="hover:text-gray-900"><Facebook /></a>
+                        <a href="#" aria-label="Facebook" className="hover:text-gray-900"><Youtube /></a>
                     </div>
                     <form className="mt-4">
                         <label htmlFor="email" className="sr-only">Subscribe</label>
@@ -63,7 +66,7 @@ export default function Footer() {
             </div>
 
             <div className="border-t border-gray-200 py-6 text-center text-xs text-gray-500">
-                © {new Date().getFullYear()} Your Store. All rights reserved.
+                © {new Date().getFullYear()} Faiz. All rights reserved.
             </div>
         </footer>
     );

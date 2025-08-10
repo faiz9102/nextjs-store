@@ -4,7 +4,7 @@ import ProductPageProduct from "./components/ProductPageProduct";
 import { notFound } from "next/navigation";
 
 export default async function Page({ params }: { params: { slug: string } }) {
-    const { slug } = await params;
+    const { slug } = params;
     const product: ProductItem | null = await getProductByUrlKey(slug);
 
     console.log("Product fetched:", product);

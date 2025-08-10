@@ -111,7 +111,7 @@ export default function ProductPageProduct({product}: { product: ProductItem }) 
                 {/* Configurable Options */}
                 {product.configurable_options?.length ? (
                     <div className="flex flex-col gap-4">
-                        {product.configurable_options.map((option: { attribute_code: Key | null | undefined; label: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; values: { label: string; swatch_data?: { value?: string; thumbnail?: string; }; }[]; }) => (
+                        {product.configurable_options.map((option: { attribute_code: Key | null | undefined; label: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement | Iterable<ReactNode> | null | undefined> | null | undefined; values: { label: string; swatch_data?: { value?: string; thumbnail?: string; }; }[]; }) => (
                             <div key={option.attribute_code}>
                                 <p className="font-medium mb-2">{option.label}</p>
                                 <div className="flex gap-2 flex-wrap">

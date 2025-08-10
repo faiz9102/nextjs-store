@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import {
     NavigationMenu,
@@ -15,7 +14,7 @@ export default async function Navbar() {
     return (
         <>
             <div>
-                <Link href="/">Home</Link>
+                <Link href="/" className="text-lg font-medium hover:opacity-80 transition-opacity">Home</Link>
             </div>
             <NavigationMenu>
                 <NavigationMenuList>
@@ -33,7 +32,7 @@ export default async function Navbar() {
                 <Input
                     type="search"
                     placeholder="Search"
-                    className="w-full max-w-sm bg-transparent"
+                    className="w-full max-w-sm bg-transparent placeholder:text-black placeholder:opacity-100 border-gray-300"
                 />
             </div>
         </>

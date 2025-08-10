@@ -2,7 +2,6 @@ type ProductImage = { url: string; label?: string };
 type Price = { value: number; currency: string };
 
 export interface ProductItem {
-    uid: Key | null | undefined;
     uid: string;
     name: string;
     sku: string;
@@ -34,5 +33,37 @@ export type ProductPrice = {
     regular_price: {
         value: number;
         currency: string
+    };
+};
+
+
+export type FilterOperatorString = {
+    eq?: string;
+    in?: string[];
+    match?: string;
+};
+
+export type FilterOperatorNumber = {
+    eq?: number;
+    in?: number[];
+    from?: number;
+    to?: number;
+};
+
+export type ProductFilter = {
+    category_uid?: FilterOperatorString;
+    category_ids?: FilterOperatorString;
+    sku?: FilterOperatorString;
+    name?: FilterOperatorString;
+    price?: FilterOperatorNumber;
+    visibility?: FilterOperatorNumber;
+    status?: FilterOperatorNumber;
+    custom_attributes?: Record<string, FilterOperatorString | FilterOperatorNumber>;
+
+    pageSize?: number;
+    currentPage?: number;
+    sort?: {
+        field: string;
+        direction: "ASC" | "DESC";
     };
 };

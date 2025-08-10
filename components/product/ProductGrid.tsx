@@ -1,14 +1,14 @@
 import ProductCard from "@/components/product/ProductCard";
 import { type ProductItem } from "@/types/product";
-import { type CategoryItem } from "@/types/Category";
-import { getProductsByCategory } from "@/services/products"; // assuming function, not raw graphql file
+import { getFilteredProducts } from "@/services/products";
+import { type ProductFilter } from "@/types/product";
 
-interface ProductGridProps {
-    category_uid: CategoryItem["uid"];
+type ProductGridProps = {
+    filter: ProductFilter;
 }
 
-export default async function ProductGrid({ category_uid }: ProductGridProps) {
-    const products: ProductItem[] = await getProductsByCategory(category_uid);
+export default async function ProductGrid({ filter }: ProductGridProps) {
+    const products: ProductItem[] = await getFilteredProducts(filter);
 
     return products.length > 0 ? (
         <div

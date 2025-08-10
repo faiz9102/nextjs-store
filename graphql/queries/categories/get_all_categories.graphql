@@ -1,8 +1,8 @@
-query {
+query GetAllCategories {
     categories {
         items {
             children {
-                id : uid
+                uid
                 name
                 url_key
             }

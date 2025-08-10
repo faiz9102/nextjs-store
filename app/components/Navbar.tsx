@@ -7,11 +7,10 @@ import {
     NavigationMenuLink,
     NavigationMenuList
 } from "@/components/ui/navigation-menu";
-import { getAllCategories } from "@/services/categories";
+import {getAllCategories} from "@/services/categories";
 
 export default async function Navbar() {
     const categories = await getAllCategories();
-    console.table(categories);
 
     return (
         <>
@@ -21,8 +20,9 @@ export default async function Navbar() {
             <NavigationMenu>
                 <NavigationMenuList>
                     {categories.map((cat) => (
-                        <NavigationMenuItem key={cat.id}>
-                            <NavigationMenuLink className="text-sm font-medium text-gray-700 hover:text-gray-900" asChild>
+                        <NavigationMenuItem key={cat.uid}>
+                            <NavigationMenuLink className="text-sm font-medium text-gray-700 hover:text-gray-900"
+                                                asChild>
                                 <Link href={`/category/${cat.url_key}`}>{cat.name}</Link>
                             </NavigationMenuLink>
                         </NavigationMenuItem>

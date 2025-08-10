@@ -1,13 +1,5 @@
-export type CategoryItem = {
+export interface CategoryItem  {
     name: string;
-    id: string;
+    uid: string;
     url_key: string;
-};
-
-export type CategoriesResponse = {
-    categories?: {
-        items?: Array<{
-            children?: CategoryItem[];
-        }>;
-    };
 };

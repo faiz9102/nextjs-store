@@ -1,13 +1,38 @@
-export type ProductItem = {
+type ProductImage = { url: string; label?: string };
+type Price = { value: number; currency: string };
+
+export interface ProductItem {
+    uid: Key | null | undefined;
     uid: string;
     name: string;
     sku: string;
-    price: {
-        regularPrice: {
-            amount: {
-                value: number;
-                currency: string;
-            };
+    url_key?: string;
+    canonical_url?: string;
+    small_image?: ProductImage;
+    thumbnail?: ProductImage;
+    price_range: {
+        minimum_price: {
+            regular_price: Price;
+            final_price: Price;
         };
-    }
+    };
+    categories: { uid: string; name: string }[];
+    configurable_options?: {
+        attribute_code: string;
+        label: string;
+        values: {
+            label: string;
+            swatch_data?: {
+                value?: string; // HEX or image
+                thumbnail?: string; // For image swatches
+            };
+        }[];
+    }[];
 }
+
+export type ProductPrice = {
+    regular_price: {
+        value: number;
+        currency: string
+    };
+};

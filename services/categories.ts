@@ -1,30 +1,25 @@
 // @ts-expect-error import { GraphQLError } from "graphql";
 import GET_CATEGORIES_QUERY from "@/graphql/queries/categories/get_all_categories.graphql";
-import {CategoriesResponse} from "@/types/Category";
 import { GraphQLResponse } from "@/types/apollo"
+import { type CategoryItem } from "@/types/Category";
 import {print} from "graphql";
 
-type Category = {
-    name: string;
-    id: string;
-    url_key: string;
-};
 
 type CategoriesResponse = {
     categories?: {
         items?: Array<{
-            children?: Category[];
+            children?: CategoryItem[];
         }>;
     };
 };
 
 
-const getAllCategories = async (): Promise<Category[]> => {
+const getAllCategories = async (): Promise<CategoryItem[]> => {
     'use cache';
     const queryString = print(GET_CATEGORIES_QUERY);
 
     try {
-        const res = await fetch(process.env.NEXT_PUBLIC_MAGENTO_GRAPHQL_ENDPOINT, {
+        const res = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -48,7 +43,7 @@ const getAllCategories = async (): Promise<Category[]> => {
         return items.flatMap((item) =>
             (item.children ?? []).map((child) => ({
                 name: child.name,
-                id: child.id || child.name,
+                uid: child.uid,
                 slug: child.url_key || child.name.toLowerCase().replace(/\s+/g, '-'),
                 url_key: child.url_key
             }))

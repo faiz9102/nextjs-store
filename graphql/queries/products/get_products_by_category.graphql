@@ -1,0 +1,56 @@
+query GetProductsByCategory($cat: String!) {
+    products(filter: { category_uid: { eq: $cat } }) {
+        total_count
+        items {
+            uid
+            name
+            sku
+            url_key
+            canonical_url
+            small_image {
+                url
+                label
+            }
+            thumbnail {
+                url
+                label
+            }
+            image {
+                url
+                label
+                position
+            }
+            price_range {
+                minimum_price {
+                    regular_price {
+                        value
+                        currency
+                    }
+                    final_price {
+                        value
+                        currency
+                    }
+                }
+            }
+            categories {
+                uid
+                name
+            }
+            ... on ConfigurableProduct {
+                configurable_options {
+                    attribute_code
+                    label
+                    values {
+                        label
+                        swatch_data {
+                            value
+                            ... on ImageSwatchData {
+                                thumbnail
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -18,7 +18,7 @@ export default function ProductCard({ product }: { product: ProductItem }) {
                 href={`/product/${product.url_key}`}
                 className="block relative aspect-3/4 rounded-xl overflow-hidden bg-gray-100"
             >
-                <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors z-10"></div>
+                <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors z-0"></div>
                 {product.small_image?.url ? (
                     <Image
                         src={product.small_image.url}
@@ -35,7 +35,7 @@ export default function ProductCard({ product }: { product: ProductItem }) {
 
                 {/* Sale badge */}
                 {isDiscounted && (
-                    <div className="absolute top-2 right-2 bg-red-500 text-white text-xs md:text-sm font-medium px-2 py-1 rounded-md z-20">
+                    <div className="absolute top-2 right-2 bg-red-500 text-white text-xs md:text-sm font-medium px-2 py-1 rounded-md z-0">
                         SALE
                     </div>
                 )}

@@ -2,10 +2,25 @@ query GetAllCategories {
     categories {
         items {
             children {
-                uid
-                name
-                url_key
+                ...CategoryFields
+                children {
+                    ...CategoryFields
+                    children {
+                        ...CategoryFields
+                        children {
+                            ...CategoryFields
+                        }
+                    }
+                }
             }
         }
     }
+}
+
+fragment CategoryFields on CategoryTree {
+    uid
+    name
+    url_key
+    level
+    path
 }

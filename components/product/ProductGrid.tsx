@@ -4,7 +4,7 @@ import { getFilteredProducts } from "@/services/products";
 import { type ProductFilter } from "@/types/product";
 
 type ProductGridProps = {
-    filter: ProductFilter;
+    filter: ProductFilter,
 }
 
 export default async function ProductGrid({ filter }: ProductGridProps) {

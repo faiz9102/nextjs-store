@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Input } from "@/components/ui/input"
 import {getAllCategories} from "@/services/categories";
+import MiniCart from "@/components/minicart/Minicart";
 
 export default async function Navbar() {
     const categories = await getAllCategories();
@@ -28,7 +29,8 @@ export default async function Navbar() {
                     ))}
                 </NavigationMenuList>
             </NavigationMenu>
-            <div>
+            <div className="flex flex-row items-center gap-6">
+                <MiniCart />
                 <Input
                     type="search"
                     placeholder="Search"

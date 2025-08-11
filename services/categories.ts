@@ -1,9 +1,7 @@
-// @ts-expect-error import { GraphQLError } from "graphql";
 import GET_CATEGORIES_QUERY from "@/graphql/queries/categories/get_all_categories.graphql";
 import { GraphQLResponse } from "@/types/apollo"
-import { type CategoryItem } from "@/types/Category";
+import { type CategoryItem } from "@/types/category";
 import {print} from "graphql";
-
 
 type CategoriesResponse = {
     categories?: {
@@ -13,13 +11,23 @@ type CategoriesResponse = {
     };
 };
 
+// Helper function to transform GraphQL category data to our CategoryItem format
+const mapCategoryData = (category: CategoryItem): CategoryItem => {
+    return {
+        name: category.name,
+        uid: category.uid,
+        url_key: category.url_key,
+        path: category.path || '',
+        level: category.level || 0,
+        children: category.children ? category.children.map(mapCategoryData) : []
+    };
+};
 
 const getAllCategories = async (): Promise<CategoryItem[]> => {
-    'use cache';
     const queryString = print(GET_CATEGORIES_QUERY);
 
     try {
-        const res = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT, {
+        const res = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -41,12 +49,7 @@ const getAllCategories = async (): Promise<CategoryItem[]> => {
 
         const items = data?.categories?.items ?? [];
         return items.flatMap((item) =>
-            (item.children ?? []).map((child) => ({
-                name: child.name,
-                uid: child.uid,
-                slug: child.url_key || child.name.toLowerCase().replace(/\s+/g, '-'),
-                url_key: child.url_key
-            }))
+            (item.children ?? []).map(mapCategoryData)
         );
     }
     catch (error) {

@@ -3,7 +3,7 @@ import React, {Suspense} from 'react';
 import {notFound} from 'next/navigation';
 import SkeletonProductGrid from '@/components/product/SkeletonProductGrid';
 import ProductGrid from '@/components/product/ProductGrid';
-import {type CategoryItem} from '@/types/Category';
+import {type CategoryItem} from '@/types/category';
 import {type ProductFilter} from '@/types/product';
 
 interface CategoryParams {

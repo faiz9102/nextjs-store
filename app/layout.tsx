@@ -53,7 +53,7 @@ export default async function RootLayout({
             md:px-8
             lg:px-10
           "
-            style={{zIndex: "9999"}}
+            style={{zIndex: "20"}}
         >
             <Navbar/>
         </div>

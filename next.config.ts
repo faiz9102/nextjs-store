@@ -13,7 +13,10 @@ const nextConfig: NextConfig = {
         useCache : true
     },
     images: {
-        remotePatterns: [new URL('http://magento.local/**')],
+        remotePatterns: [
+            new URL('http://magento.local/**'),
+            new URL("https://dummyimage.com")
+        ],
     },
 };
 

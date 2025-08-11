@@ -19,6 +19,8 @@ const mapCategoryData = (category: CategoryItem): CategoryItem => {
         url_key: category.url_key,
         path: category.path || '',
         level: category.level || 0,
+        description: category.description || '',
+        image: category.image || '',
         children: category.children ? category.children.map(mapCategoryData) : []
     };
 };

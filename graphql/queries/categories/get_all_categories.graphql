@@ -23,4 +23,6 @@ fragment CategoryFields on CategoryTree {
     url_key
     level
     path
+    description
+    image
 }

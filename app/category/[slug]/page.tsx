@@ -5,6 +5,7 @@ import SkeletonProductGrid from '@/components/product/SkeletonProductGrid';
 import ProductGrid from '@/components/product/ProductGrid';
 import {type CategoryItem} from '@/types/category';
 import {type ProductFilter} from '@/types/product';
+import HeaderBackgroundImage from '@/public/categoryHeaderBackgroundImage.webp';
 
 interface CategoryParams {
     slug: string;
@@ -31,7 +32,7 @@ const CategoryPage = async ({params}: { params: Promise<CategoryParams> }) => {
     return (
         <div className="pt-24 sm:pt-28 md:pt-32">
             {/* Category header */}
-            <div className="bg-gradient-to-r from-gray-50 to-white py-8 sm:py-12 mb-8">
+            <div className="bg-gradient-to-r from-gray-50 to-white py-8 sm:py-12 mb-8 background-repeat" style={{background: "url(" + HeaderBackgroundImage.src + ")"}}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
                         {category.name}

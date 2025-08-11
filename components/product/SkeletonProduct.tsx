@@ -4,7 +4,7 @@ export default function SkeletonProduct() {
     return (
         <div className="animate-pulse flex flex-col w-full max-w-xs mx-auto">
             {/* Image placeholder */}
-            <Skeleton className="aspect-square w-full rounded-xl" />
+            <Skeleton className="aspect-3/4 w-full rounded-xl" />
 
             {/* Product name */}
             <Skeleton className="mt-4 h-5 w-3/4 rounded" />

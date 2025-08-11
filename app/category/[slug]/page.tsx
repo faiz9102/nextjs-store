@@ -13,7 +13,29 @@ interface CategoryParams {
 
 export async function generateStaticParams() {
     const categories: CategoryItem[] = await getAllCategories();
-    return (categories ?? []).map((cat) => ({
+
+    // Function to extract all categories and subcategories recursively
+    const extractAllCategories = (cats: CategoryItem[]): CategoryItem[] => {
+        if (!cats || cats.length === 0) return [];
+
+        let allCats: CategoryItem[] = [...cats];
+
+        // Process each category's children recursively
+        cats.forEach(cat => {
+            if (cat.children && cat.children.length > 0) {
+                allCats = [...allCats, ...extractAllCategories(cat.children)];
+            }
+        });
+
+        return allCats;
+    };
+
+    // Get all categories including subcategories at any level
+    const allCategories = extractAllCategories(categories);
+
+    console.table(allCategories);
+    // Generate params for all categories
+    return allCategories.map((cat) => ({
         slug: cat.url_key,
     }));
 }
@@ -21,7 +43,24 @@ export async function generateStaticParams() {
 const CategoryPage = async ({params}: { params: Promise<CategoryParams> }) => {
     const {slug} = await params;
     const categories = await getAllCategories();
-    const category = categories.find((cat) => cat.url_key === slug) || null;
+    const findCategoryByUrlKey = (cats: CategoryItem[], urlKey: string): CategoryItem | null => {
+        for (const cat of cats) {
+            if (cat.url_key === urlKey) {
+                return cat;
+            }
+
+            if (cat.children && cat.children.length > 0) {
+                const foundInChildren = findCategoryByUrlKey(cat.children, urlKey);
+                if (foundInChildren) {
+                    return foundInChildren;
+                }
+            }
+        }
+
+        return null;
+    };
+
+    const category = findCategoryByUrlKey(categories, slug);
 
     if (!category) return notFound();
 

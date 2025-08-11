@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { getAllCategories } from "@/services/categories";
 import MiniCart from "@/components/minicart/Minicart";
 import * as React from "react";
-import ClientSideMegaMenu from "./ClientMegaMenu";
+import MegaMenu from "./MegaMenu";
 
 
 // Server component
@@ -16,7 +16,7 @@ export default async function Navbar() {
                 <Link href="/" className="text-lg font-medium hover:opacity-80 transition-opacity">Home</Link>
             </div>
 
-            <ClientSideMegaMenu categories={categories} />
+            <MegaMenu categories={categories} />
 
             <div className="flex flex-row items-center gap-6">
                 <MiniCart/>

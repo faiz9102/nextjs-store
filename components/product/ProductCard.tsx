@@ -16,7 +16,7 @@ export default function ProductCard({ product }: { product: ProductItem }) {
             {/* Product Image with overlay */}
             <Link
                 href={`/product/${product.url_key}`}
-                className="block relative aspect-square rounded-xl overflow-hidden bg-gray-100"
+                className="block relative aspect-3/4 rounded-xl overflow-hidden bg-gray-100"
             >
                 <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors z-10"></div>
                 {product.small_image?.url ? (

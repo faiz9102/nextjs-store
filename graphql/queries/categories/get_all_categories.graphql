@@ -18,6 +18,7 @@ query GetAllCategories {
 }
 
 fragment CategoryFields on CategoryTree {
+    id
     uid
     name
     url_key

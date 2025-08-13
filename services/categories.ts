@@ -14,6 +14,7 @@ type CategoriesResponse = {
 // Helper function to transform GraphQL category data to our CategoryItem format
 const mapCategoryData = (category: CategoryItem): CategoryItem => {
     return {
+        id: category.id,
         name: category.name,
         uid: category.uid,
         url_key: category.url_key,

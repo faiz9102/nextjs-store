@@ -1,4 +1,5 @@
 export interface CategoryItem  {
+    id: number;
     uid: string;
     name: string;
     url_key: string;

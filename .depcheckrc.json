@@ -1,0 +1,13 @@
+{
+  "ignores": [
+    "graphql-tag",
+    "client-only",
+    "server-only",
+    "tailwindcss",
+    "@tailwindcss/postcss",
+    "eslint",
+    "eslint-config-next",
+    "typescript",
+    "tw-animate-css"
+  ]
+}

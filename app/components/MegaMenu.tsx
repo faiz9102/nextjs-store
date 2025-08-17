@@ -55,11 +55,11 @@ export default function MegaMenu({
             style.textContent = `
                 main::before {
                     content: '';
-                    position: absolute;
+                    position: fixed;
                     inset: 0;
                     background-color: rgba(0,0,0,0.2);
                     backdrop-filter: blur(8px);
-                    --webkit-backdrop-filter: blur(8px);
+                    -webkit-backdrop-filter: blur(8px);
                     z-index: 5;
                     pointer-events: none;
                 }

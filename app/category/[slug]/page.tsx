@@ -32,8 +32,6 @@ export async function generateStaticParams() {
 
     // Get all categories including subcategories at any level
     const allCategories = extractAllCategories(categories);
-
-    console.table(allCategories);
     // Generate params for all categories
     return allCategories.map((cat) => ({
         slug: cat.url_key,

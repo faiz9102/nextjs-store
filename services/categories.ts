@@ -27,6 +27,8 @@ const mapCategoryData = (category: CategoryItem): CategoryItem => {
 };
 
 const getAllCategories = async (): Promise<CategoryItem[]> => {
+    "use cache";
+
     const queryString = print(GET_CATEGORIES_QUERY);
 
     try {

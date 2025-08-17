@@ -2,6 +2,8 @@ import { GraphQLResponse } from "@/types/apollo";
 import { print } from "graphql";
 import GENERATE_CUSTOMER_TOKEN from "@/graphql/mutations/customers/generate_customer_token.graphql";
 import CREATE_CUSTOMER from "@/graphql/mutations/customers/create_customer.graphql";
+import GET_CUSTOMER_DATA from "@/graphql/queries/customer/get_customer_data.graphql";
+import { User } from "@/types/customer";
 
 export type CustomerCreateInput = {
   email: string;
@@ -57,4 +59,31 @@ export async function createCustomer(input: CustomerCreateInput): Promise<Custom
     throw new Error(errors.map(e => e.message).join("; "));
   }
   return data?.createCustomer?.customer;
+}
+
+export async function getCustomerData(userToken: string): Promise<User> {
+    const query = print(GET_CUSTOMER_DATA);
+    const res = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${userToken}`
+        },
+        body: JSON.stringify({ query }),
+        next: {
+            tags: ["customer-data"]
+        }
+    });
+
+    if (!res.ok) {
+        throw new Error(`Auth error: ${res.status} ${res.statusText}`);
+    }
+
+    const { data, errors }: GraphQLResponse<{ customer?: User }> = await res.json();
+    if (errors?.length) {
+        throw new Error(errors.map(e => e.message).join("; "));
+    }
+    const userData = data?.customer;
+    if (!userData) throw new Error("No userData returned");
+    return userData;
 }

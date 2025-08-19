@@ -1,9 +1,13 @@
+"use server";
+
+import "server-only";
 import { GraphQLResponse } from "@/types/apollo";
 import { print } from "graphql";
 import GENERATE_CUSTOMER_TOKEN from "@/graphql/mutations/customers/generate_customer_token.graphql";
 import CREATE_CUSTOMER from "@/graphql/mutations/customers/create_customer.graphql";
 import GET_CUSTOMER_DATA from "@/graphql/queries/customer/get_customer_data.graphql";
 import { User } from "@/types/customer";
+import { getAuthToken } from "@/lib/auth/token";
 
 export type CustomerCreateInput = {
   email: string;
@@ -61,7 +65,13 @@ export async function createCustomer(input: CustomerCreateInput): Promise<Custom
   return data?.createCustomer?.customer;
 }
 
-export async function getCustomerData(userToken: string): Promise<User> {
+export async function getCustomerData(): Promise<User> {
+    const userToken = await getAuthToken();
+
+    if (!userToken) {
+        throw new Error("User is not authenticated");
+    }
+
     const query = print(GET_CUSTOMER_DATA);
     const res = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
         method: "POST",
@@ -84,6 +94,6 @@ export async function getCustomerData(userToken: string): Promise<User> {
         throw new Error(errors.map(e => e.message).join("; "));
     }
     const userData = data?.customer;
-    if (!userData) throw new Error("No userData returned");
+    if (!userData) throw new Error("No user data returned");
     return userData;
 }

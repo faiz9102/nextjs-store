@@ -1,27 +1,34 @@
 'use server';
 
-import { createCustomer, generateCustomerToken } from '@/services/auth';
-import { cookies } from 'next/headers';
+import "server-only";
+import { createCustomer } from '@/services/auth';
 import { revalidatePath } from 'next/cache';
-import {
-    AUTH_COOKIE_NAME,
-    getAuthCookieOptions,
-    encryptToken,
-} from '@/lib/auth/cookies';
+import { authenticateAndSetCookie , clearAuthCookie, isAuthenticated } from '@/lib/auth/token';
+import { getCustomerData } from '@/services/auth';
+import { User } from '@/types/customer';
 
 type ActionOk = { ok: true };
-type ActionErr = { ok: false; error: string };
+type ActionErr = { ok: false; error: Error };
 export type ActionResult = ActionOk | ActionErr;
 
 
-export async function logout(currentPath: string = '/'): Promise<ActionOk> {
-    const store = await cookies();
-    store.set(AUTH_COOKIE_NAME, '', { ...getAuthCookieOptions(), maxAge: 0 });
-    revalidatePath(currentPath, 'layout');
-    return { ok: true };
+export async function logout(currentPath: string = '/'): Promise<ActionResult> {
+    try {
+        await clearAuthCookie();
+        revalidatePath(currentPath);
+        return { ok: true };
+    } catch (e: unknown) {
+        return {
+            ok: false,
+            error: e instanceof Error ? e : new Error('Logout failed')
+        };
+    }
 }
 
-export async function createAccountAndLogin(formData: FormData): Promise<ActionResult> {
+export async function signup(formData: FormData): Promise<ActionResult> {
+    if (await isAuthenticated())
+        return { ok: true };
+
     try {
         const email = String(formData.get('email') || '');
         const firstname = String(formData.get('firstname') || '');
@@ -29,44 +36,59 @@ export async function createAccountAndLogin(formData: FormData): Promise<ActionR
         const password = String(formData.get('password') || '');
 
         if (!email || !firstname || !lastname || !password) {
-            return { ok: false, error: 'All fields are required' };
+            return {
+                ok: false,
+                error: new Error('All fields are required')
+            };
         }
 
         await createCustomer({ email, firstname, lastname, password });
 
-        return await authenticateAndSetCookie(email, password);
+        return { ok: true };
     } catch (e: unknown) {
-        const message = e instanceof Error ? e.message : 'Signup failed';
-        return { ok: false, error: message };
+        return {
+            ok: false,
+            error: e instanceof Error ? e : new Error('Signup failed')
+        };
     }
 }
 
 export async function login(formData: FormData): Promise<ActionResult> {
-    const email = String(formData.get('email') || '');
-    const password = String(formData.get('password') || '');
-    return authenticateAndSetCookie(email, password);
+    if (await isAuthenticated())
+        return { ok: true };
+
+    const email = String(formData.get('email'));
+    const password = String(formData.get('password'));
+
+    if (!email || !password) {
+        return {
+            ok: false,
+            error: new Error('Email and password are required')
+        };
+    }
+
+    try {
+        return authenticateAndSetCookie(email, password);
+    } catch (e: unknown) {
+        return {
+            ok: false,
+            error: e instanceof Error ? e : new Error('Login failed')
+        };
+    }
 }
 
+export async function getCustomer(): Promise<ActionErr|{ ok: true; user: User }> {
+    if (!(await isAuthenticated())) {
+        return { ok: false, error: new Error('Not authenticated') };
+    }
 
-async function authenticateAndSetCookie(email: string, password: string): Promise<ActionResult> {
     try {
-        if (!email || !password) {
-            return { ok: false, error: 'Email and password are required' };
-        }
-
-        const token = await generateCustomerToken(email, password);
-        const secret = process.env.AUTH_COOKIE_SECRET;
-        if (!secret) {
-            return { ok: false, error: 'Server misconfiguration: missing `AUTH_COOKIE_SECRET`' };
-        }
-
-        const encrypted = encryptToken(token, secret);
-        const store = await cookies();
-        store.set(AUTH_COOKIE_NAME, encrypted, getAuthCookieOptions());
-
-        return { ok: true };
+        const user = await getCustomerData();
+        return { ok: true, user: user };
     } catch (e: unknown) {
-        const message = e instanceof Error ? e.message : 'Authentication failed';
-        return { ok: false, error: message };
+        return {
+            ok: false,
+            error: e instanceof Error ? e : new Error('Failed to fetch customer data')
+        };
     }
 }

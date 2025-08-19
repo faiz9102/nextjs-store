@@ -1,0 +1,13 @@
+query getCustomerData {
+    customer {
+        email
+        firstname
+        middlename
+        lastname
+        date_of_birth
+        default_billing
+        default_shipping
+        is_subscribed
+        gender
+    }
+}

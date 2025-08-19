@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import "client-only";
+import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { login, createAccountAndLogin } from '@/app/actions/auth';
+import { signup } from '@/app/actions/auth';
+import { useAuth } from '@/context/authContext';
 
 type TabKey = 'login' | 'signup';
 type FieldName = 'email' | 'password' | 'firstname' | 'lastname';
@@ -38,6 +40,7 @@ const validateSignup = (data: {
 };
 
 export default function AuthForm() {
+    const { loginUser } = useAuth();
     const router = useRouter();
 
     const [tab, setTab] = useState<TabKey>('login');
@@ -70,10 +73,10 @@ export default function AuthForm() {
         try {
             setLoading(true);
             const formData = new FormData(e.currentTarget);
-            await login(formData);
+            await loginUser(formData);
             router.refresh();
-        } catch {
-            setError('Login failed. Please try again.');
+        } catch (e : any) {
+            setError(e.message || 'Login failed. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -92,8 +95,15 @@ export default function AuthForm() {
         try {
             setLoading(true);
             const formData = new FormData(e.currentTarget);
-            await createAccountAndLogin(formData);
-            router.refresh();
+            if ((await signup(formData)).ok)
+            {
+                setTab('login');
+                setEmail('');
+                setPassword('');
+                setFirstname('');
+                setLastname('');
+                router.refresh();
+            }
         } catch {
             setError('Signup failed. Please try again.');
         } finally {

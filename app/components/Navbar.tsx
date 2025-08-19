@@ -5,6 +5,7 @@ import MiniCart from "@/components/minicart/Minicart";
 import * as React from "react";
 import MegaMenu from "./MegaMenu";
 import MobileMenu from "./MobileMenu";
+import { Account } from "@/app/components/auth/Account";
 
 
 // Server component
@@ -30,7 +31,8 @@ export default async function Navbar() {
 
             {/* Right side elements */}
             <div className="flex flex-row items-center gap-6">
-                <MiniCart/>
+                <Account />
+                <MiniCart />
                 {/* Search input (hidden on mobile) */}
                 <div className="hidden md:block">
                     <Input

@@ -27,7 +27,7 @@ export default async function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className="scroll-smooth">
+        <html lang="en" className="scroll-smooth overflow-y-auto" style={{scrollbarGutter: "stable"}}>
             <ContextProvders>
             <body
                 className={`

@@ -1,3 +1,5 @@
+"use server";
+
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { getAllCategories } from "@/services/categories";
@@ -7,15 +9,13 @@ import MegaMenu from "./MegaMenu";
 import MobileMenu from "./MobileMenu";
 import { Account } from "@/app/components/auth/Account";
 
-
-// Server component
 export default async function Navbar() {
     const categories = await getAllCategories();
 
     return (
         <>
-            {/* Mobile menu (only visible on small screens) */}
-            <div className="md:hidden">
+            {/* Mobile menu (visible on small and medium screens) */}
+            <div className="block lg:hidden">
                 <MobileMenu categories={categories} />
             </div>
 
@@ -24,21 +24,27 @@ export default async function Navbar() {
                 <Link href="/" className="text-lg font-medium hover:opacity-80 transition-opacity">Home</Link>
             </div>
 
-            {/* Desktop mega menu (hidden on mobile) */}
-            <div className="hidden md:block">
+            {/* Desktop mega menu (hidden on mobile and medium screens) */}
+            <div className="hidden lg:block">
                 <MegaMenu categories={categories} />
             </div>
 
             {/* Right side elements */}
             <div className="flex flex-row items-center gap-6">
-                <Account />
+                <span className={`hidden sm:block`}>
+                    <Account />
+                </span>
                 <MiniCart />
                 {/* Search input (hidden on mobile) */}
-                <div className="hidden md:block">
+                <div className="hidden lg:block">
                     <Input
                         type="search"
                         placeholder="Search"
-                        className="w-full max-w-sm bg-transparent placeholder:text-black placeholder:opacity-100 border-gray-300"
+                        className="w-full
+                        max-w-sm bg-transparent
+                        placeholder:text-black
+                        placeholder:opacity-100
+                        border-gray-300"
                     />
                 </div>
             </div>

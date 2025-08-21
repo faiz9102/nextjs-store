@@ -1,11 +1,10 @@
-// noinspection JSUnusedGlobalSymbols
-
 import GET_FILTERED_PRODUCTS_QUERY from "@/graphql/queries/products/get_filtered_products.graphql";
 import { GraphQLResponse } from "@/types/apollo";
 import { ProductItem } from "@/types/product";
 import { print } from "graphql";
-import { type ProductFilter } from "@/types/product";
+import { type ProductFilter, ProductPageProduct } from "@/types/product";
 import GET_PRODUCTS_BY_CATEGORY_QUERY from "@/graphql/queries/products/get_products_by_category.graphql";
+import GET_PRODUCT_FOR_PRODUCT_PAGE_QUERY from "@/graphql/queries/products/get_product_for_product_page.graphql";
 
 interface ProductsResponse {
     products: {
@@ -90,9 +89,16 @@ const getFilteredProducts = async (filters: ProductFilter): Promise<ProductItem[
     }
 };
 
-const getProductByUrlKey = async (url_key: string): Promise<ProductItem | null> => {
+interface ProductPageProductsResponse {
+    products: {
+        total_count: number;
+        items: ProductPageProduct[];
+    };
+}
+
+const getProductByUrlKey = async (url_key: string): Promise<ProductPageProduct | null> => {
     "use cache";
-    const queryString = print(GET_FILTERED_PRODUCTS_QUERY);
+    const queryString = print(GET_PRODUCT_FOR_PRODUCT_PAGE_QUERY);
 
     const filter: ProductFilter = {
         "url_key":  { eq: url_key }
@@ -115,7 +121,7 @@ const getProductByUrlKey = async (url_key: string): Promise<ProductItem | null> 
             return null;
         }
 
-        const { data, errors }: GraphQLResponse<ProductsResponse> = await res.json();
+        const { data, errors }: GraphQLResponse<ProductPageProductsResponse> = await res.json();
 
         if (errors) {
             console.error("GraphQL errors:", errors);

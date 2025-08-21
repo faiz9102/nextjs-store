@@ -1,0 +1,53 @@
+query GetProductForProductPage($filter: ProductAttributeFilterInput) {
+    products(filter: $filter) {
+        total_count
+        items {
+            meta_title
+            meta_description
+            meta_keyword
+            uid
+            name
+            sku
+            url_key
+            canonical_url
+            media_gallery {
+                url
+                label
+                position
+                disabled
+            }
+            price_range {
+                minimum_price {
+                    regular_price {
+                        value
+                        currency
+                    }
+                    final_price {
+                        value
+                        currency
+                    }
+                }
+            }
+            categories {
+                uid
+                name
+                url_key
+            }
+            ... on ConfigurableProduct {
+                configurable_options {
+                    attribute_code
+                    label
+                    values {
+                        label
+                        swatch_data {
+                            value
+                            ... on ImageSwatchData {
+                                thumbnail
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

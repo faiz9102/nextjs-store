@@ -31,6 +31,13 @@ export interface ProductItem {
     }[];
 }
 
+export interface ProductPageProduct extends ProductItem {
+    meta_title?: string;
+    meta_description?: string;
+    meta_keyword?: string;
+    media_gallery: ProductImage[];
+}
+
 export type ProductPrice = {
     regular_price: {
         value: number;

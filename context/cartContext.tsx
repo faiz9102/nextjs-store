@@ -3,10 +3,12 @@
 import React, { createContext, useContext, useReducer, type Dispatch } from 'react';
 
 export type CartItem = {
-    id: string;
+    uid: string;
+    sku: string;
     name: string;
     price: number;
     quantity: number;
+    thumbnail: string;
 };
 
 type CartState = {
@@ -15,7 +17,7 @@ type CartState = {
 
 type CartAction =
     | { type: 'ADD_ITEM'; payload: CartItem }
-    | { type: 'REMOVE_ITEM'; payload: { id: string } }
+    | { type: 'REMOVE_ITEM'; payload: { uid: string } }
     | { type: 'CLEAR_CART' };
 
 const CartContext = createContext<CartState | undefined>(undefined);
@@ -24,14 +26,13 @@ const CartDispatchContext = createContext<Dispatch<CartAction> | undefined>(unde
 function cartReducer(state: CartState, action: CartAction): CartState {
     switch (action.type) {
         case 'ADD_ITEM':
-            return { ...state, items: [...state.items, action.payload] };
+            return { ...state, items: addItem(state.items, action.payload) };
         case 'REMOVE_ITEM':
-            return { ...state, items: state.items.filter((item) => item.id !== action.payload.id) };
+            return { ...state, items: removeItem(state.items, action.payload) };
         case 'CLEAR_CART':
-            return { ...state, items: [] };
+            return { ...state, items: clearCart() };
         default:
             // Exhaustive check to help TypeScript catch unhandled actions
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const _exhaustive: never = action;
             throw new Error('Unknown action');
     }
@@ -56,4 +57,28 @@ export function useCartDispatch(): Dispatch<CartAction> {
     const cart = useContext(CartDispatchContext);
     if (!cart) throw new Error('useCartDispatch must be used within CartProvider');
     return cart;
+}
+
+function addItem(cartItems: CartItem[], payload: CartItem): CartItem[] {
+    const existingItemIndex = cartItems.findIndex((item) => item.uid === payload.uid);
+
+    if (existingItemIndex >= 0) {
+        // Create a new array with the updated item
+        return cartItems.map((item, index) =>
+            index === existingItemIndex
+                ? { ...item, quantity: item.quantity + payload.quantity }
+                : item
+        );
+    }
+
+    // If item doesn't exist, add it to the cart
+    return [...cartItems, payload];
+}
+
+function removeItem(cartItems: CartItem[], payload: { uid: string }): CartItem[] {
+    return cartItems.filter((item) => item.uid !== payload.uid);
+}
+
+function clearCart(): CartItem[] {
+    return [];
 }

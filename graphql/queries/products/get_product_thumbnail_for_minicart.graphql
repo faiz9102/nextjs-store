@@ -1,0 +1,13 @@
+query GetProductsByCategory($sku: String!) {
+    products(filter: { sku : { eq: $sku } }) {
+        items {
+            name
+            thumbnail {
+                position
+                url
+                disabled
+                label
+            }
+        }
+    }
+}

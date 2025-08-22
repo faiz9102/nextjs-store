@@ -10,6 +10,12 @@ query GetProductForProductPage($filter: ProductAttributeFilterInput) {
             sku
             url_key
             canonical_url
+            thumbnail {
+                url
+                position
+                disabled
+                label
+            }
             media_gallery {
                 url
                 label

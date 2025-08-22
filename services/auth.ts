@@ -1,68 +1,79 @@
 "use server";
 
 import "server-only";
-import { GraphQLResponse } from "@/types/apollo";
-import { print } from "graphql";
+import {GraphQLResponse} from "@/types/graphql";
+import {print} from "graphql";
 import GENERATE_CUSTOMER_TOKEN from "@/graphql/mutations/customers/generate_customer_token.graphql";
 import CREATE_CUSTOMER from "@/graphql/mutations/customers/create_customer.graphql";
 import GET_CUSTOMER_DATA from "@/graphql/queries/customer/get_customer_data.graphql";
-import { User } from "@/types/customer";
-import { getAuthToken } from "@/lib/auth/token";
+import {User} from "@/types/customer";
+import {getAuthToken} from "@/lib/auth/token";
 
 export type CustomerCreateInput = {
-  email: string;
-  firstname: string;
-  lastname: string;
-  password: string;
+    email: string;
+    firstname: string;
+    lastname: string;
+    password: string;
 };
 
 type CustomerLight = {
-  id: number;
-  email: string;
-  firstname: string;
-  lastname: string;
+    id: number;
+    email: string;
+    firstname: string;
+    lastname: string;
 };
 
 export async function generateCustomerToken(email: string, password: string): Promise<string> {
-  const query = print(GENERATE_CUSTOMER_TOKEN);
-  const res = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query, variables: { email, password } }),
-    cache: "no-store"
-  });
+    const query = print(GENERATE_CUSTOMER_TOKEN);
+    const response = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({query, variables: {email, password}}),
+        cache: "no-store"
+    });
 
-  if (!res.ok) {
-    throw new Error(`Auth error: ${res.status} ${res.statusText}`);
-  }
+    if (!response.ok) {
+        throw new Error(`Auth error: ${response.status} ${response.statusText}`);
+    }
 
-  const { data, errors }: GraphQLResponse<{ generateCustomerToken?: { token?: string } }> = await res.json();
-  if (errors?.length) {
-    throw new Error(errors.map(e => e.message).join("; "));
-  }
-  const token = data?.generateCustomerToken?.token;
-  if (!token) throw new Error("No token returned");
-  return token;
+    const res: GraphQLResponse<{ generateCustomerToken: { token: string } }> = await response.json();
+
+    if ('errors' in res && res.errors.length) {
+        throw new Error(res.errors.map(e => e.message).join("; "));
+    }
+
+    if ("data" in res && !res.data?.generateCustomerToken) {
+        const token = res.data.generateCustomerToken?.token;
+        if (!token) throw new Error("No token returned : Login failed");
+        return token;
+    }
+
+    throw new Error("Unexpected response format");
 }
 
 export async function createCustomer(input: CustomerCreateInput): Promise<CustomerLight | undefined> {
-  const query = print(CREATE_CUSTOMER);
-  const res = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query, variables: { input } }),
-    cache: "no-store"
-  });
+    const query = print(CREATE_CUSTOMER);
+    const response = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({query, variables: {input}}),
+        cache: "no-store"
+    });
 
-  if (!res.ok) {
-    throw new Error(`Signup error: ${res.status} ${res.statusText}`);
-  }
+    if (!response.ok) {
+        throw new Error(`Signup error: ${response.status} ${response.statusText}`);
+    }
 
-  const { data, errors }: GraphQLResponse<{ createCustomer?: { customer?: CustomerLight } }> = await res.json();
-  if (errors?.length) {
-    throw new Error(errors.map(e => e.message).join("; "));
-  }
-  return data?.createCustomer?.customer;
+    const res: GraphQLResponse<{ createCustomer: { customer: CustomerLight } }> = await response.json();
+
+    if ('errors' in res && res.errors.length) {
+        throw new Error(res.errors.map(e => e.message).join("; "));
+    }
+
+    if ('data' in res)
+        return res.data.createCustomer.customer;
+
+    throw new Error("Unexpected response format");
 }
 
 export async function getCustomerData(): Promise<User> {
@@ -73,27 +84,31 @@ export async function getCustomerData(): Promise<User> {
     }
 
     const query = print(GET_CUSTOMER_DATA);
-    const res = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
+    const response = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${userToken}`
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({query}),
         next: {
             tags: ["customer-data"]
         }
     });
 
-    if (!res.ok) {
-        throw new Error(`Auth error: ${res.status} ${res.statusText}`);
+    if (!response.ok) {
+        throw new Error(`Auth error: ${response.status} ${response.statusText}`);
     }
 
-    const { data, errors }: GraphQLResponse<{ customer?: User }> = await res.json();
-    if (errors?.length) {
-        throw new Error(errors.map(e => e.message).join("; "));
+    const res: GraphQLResponse<{ customer: User }> = await response.json();
+
+    if ('errors' in res && res.errors.length) {
+        throw new Error(res.errors.map(e => e.message).join("; "));
     }
-    const userData = data?.customer;
-    if (!userData) throw new Error("No user data returned");
-    return userData;
+
+    if ('data' in res && !res.data?.customer) {
+        return res.data.customer;
+    }
+
+    throw new Error("Unexpected response format");
 }

@@ -1,5 +1,5 @@
 import GET_CATEGORIES_QUERY from "@/graphql/queries/categories/get_all_categories.graphql";
-import { GraphQLResponse } from "@/types/apollo"
+import { GraphQLResponse } from "@/types/graphql"
 import { type CategoryItem } from "@/types/category";
 import {print} from "graphql";
 

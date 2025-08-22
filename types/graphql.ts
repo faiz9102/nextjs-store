@@ -1,7 +1,9 @@
 export type GraphQLResponse<T> = {
-    data?: T;
-    errors?: GraphQLError[];
-};
+    data: T;
+} | {
+    errors: GraphQLError[];
+}
+
 
 export type GraphQLError = {
     message: string;

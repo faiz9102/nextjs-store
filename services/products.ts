@@ -1,5 +1,5 @@
 import GET_FILTERED_PRODUCTS_QUERY from "@/graphql/queries/products/get_filtered_products.graphql";
-import { GraphQLResponse } from "@/types/apollo";
+import {GraphQLError, GraphQLResponse} from "@/types/graphql";
 import { ProductItem } from "@/types/product";
 import { print } from "graphql";
 import { type ProductFilter, ProductPageProduct } from "@/types/product";
@@ -21,7 +21,7 @@ const getProductsByCategory = async (category_uid: string): Promise<ProductItem[
     const queryString = print(GET_PRODUCTS_BY_CATEGORY_QUERY);
 
     try {
-        const res = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
+        const response = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -32,19 +32,23 @@ const getProductsByCategory = async (category_uid: string): Promise<ProductItem[
             }),
         });
 
-        if (!res.ok) {
-            console.error("Error fetching products:", res.statusText);
+        if (!response.ok) {
+            console.error("Error fetching products:", response.statusText);
             return [];
         }
 
-        const { data, errors }: GraphQLResponse<ProductsResponse> = await res.json();
+        const res: GraphQLResponse<ProductsResponse> = await response.json();
 
-        if (errors) {
-            console.error("GraphQL errors:", errors);
+        if ('errors' in res && res.errors.length) {
+            console.error("GraphQL errors:", res.errors);
             return [];
         }
 
-        return data?.products?.items ?? [];
+        if ('data' in res) {
+            return res.data.products.items ?? [];
+        }
+
+        throw new Error("Unexpected response format");
     } catch (error) {
         console.error("Error fetching products:", error);
         return [];
@@ -59,7 +63,7 @@ const getFilteredProducts = async (filters: ProductFilter): Promise<ProductItem[
     const queryString = print(GET_FILTERED_PRODUCTS_QUERY);
 
     try {
-        const res = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
+        const response = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -70,19 +74,23 @@ const getFilteredProducts = async (filters: ProductFilter): Promise<ProductItem[
             }),
         });
 
-        if (!res.ok) {
-            console.error("Error fetching filtered products:", res.statusText);
+        if (!response.ok) {
+            console.error("Error fetching filtered products:", response.statusText);
             return [];
         }
 
-        const { data, errors }: GraphQLResponse<ProductsResponse> = await res.json();
+        const res: GraphQLResponse<ProductsResponse> = await response.json();
 
-        if (errors) {
-            console.error("GraphQL errors:", errors);
+        if ('errors' in res && res.errors?.length) {
+            console.error("GraphQL errors:", res.errors);
             return [];
         }
 
-        return data?.products?.items ?? [];
+        if ('data' in res) {
+            return res.data.products.items ?? [];
+        }
+
+        throw new Error("Unexpected response format");
     } catch (error) {
         console.error("Error fetching filtered products:", error);
         return [];
@@ -105,7 +113,7 @@ const getProductByUrlKey = async (url_key: string): Promise<ProductPageProduct |
     }
 
     try {
-        const res = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
+        const response = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -116,19 +124,22 @@ const getProductByUrlKey = async (url_key: string): Promise<ProductPageProduct |
             }),
         });
 
-        if (!res.ok) {
-            console.error("Error fetching product:", res.statusText , "   " ,url_key);
+        if (!response.ok) {
+            console.error("Error fetching product:", response.statusText , "   " ,url_key);
             return null;
         }
 
-        const { data, errors }: GraphQLResponse<ProductPageProductsResponse> = await res.json();
+        const res: GraphQLResponse<ProductPageProductsResponse> = await response.json();
 
-        if (errors) {
-            console.error("GraphQL errors:", errors);
-            return null;
+        if ('errors' in res && res.errors?.length) {
+            console.error("GraphQL errors:", res.errors);
+            return null;}
+
+        if ('data' in res) {
+            return res.data?.products?.items[0] ?? null;
         }
 
-        return data?.products?.items[0] ?? null;
+        throw new Error("Unexpected response format");
     } catch (error) {
         console.error("Error fetching filtered products:", error);
         return null;

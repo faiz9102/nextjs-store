@@ -9,3 +9,4 @@ declare module '*.gql' {
   const Schema: DocumentNode;
   export default Schema;
 }
+

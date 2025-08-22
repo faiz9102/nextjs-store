@@ -1,12 +1,12 @@
 import GET_CATEGORIES_QUERY from "@/graphql/queries/categories/get_all_categories.graphql";
-import { GraphQLResponse } from "@/types/graphql"
+import { GraphQLResponse } from "@/types/graphqlTypes"
 import { type CategoryItem } from "@/types/category";
 import {print} from "graphql";
 
 type CategoriesResponse = {
-    categories?: {
-        items?: Array<{
-            children?: CategoryItem[];
+    categories: {
+        items: Array<{
+            children: CategoryItem[];
         }>;
     };
 };
@@ -32,7 +32,7 @@ const getAllCategories = async (): Promise<CategoryItem[]> => {
     const queryString = print(GET_CATEGORIES_QUERY);
 
     try {
-        const res = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
+        const response = await fetch(process.env.MAGENTO_GRAPHQL_ENDPOINT as string, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -40,22 +40,27 @@ const getAllCategories = async (): Promise<CategoryItem[]> => {
             body: JSON.stringify({ query: queryString }),
         });
 
-        if (!res.ok) {
-            console.error("Error fetching categories:", res.statusText);
+        if (!response.ok) {
+            console.error("Error fetching categories:", response.statusText);
             return [];
         }
 
-        const { data, errors }: GraphQLResponse<CategoriesResponse> = await res.json();
+        const res: GraphQLResponse<CategoriesResponse> = await response.json();
 
-        if (errors) {
-            console.error("GraphQL errors:", errors);
-            return [];
+
+        if ('errors' in res && res.errors.length > 0) {
+            throw new Error(res.errors.map(e => e.message).join("; "));
         }
 
-        const items = data?.categories?.items ?? [];
-        return items.flatMap((item) =>
-            (item.children ?? []).map(mapCategoryData)
-        );
+        if ("data" in res) {
+            const items = res.data.categories.items ?? [];
+            return items.flatMap((item) =>
+                (item.children ?? []).map(mapCategoryData)
+            );
+        }
+
+
+        throw new Error("Unexpected response format");
     }
     catch (error) {
         console.error("Error fetching categories:", error);

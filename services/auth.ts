@@ -1,7 +1,7 @@
 "use server";
 
 import "server-only";
-import {GraphQLResponse} from "@/types/graphql";
+import {GraphQLResponse} from "@/types/graphqlTypes";
 import {print} from "graphql";
 import GENERATE_CUSTOMER_TOKEN from "@/graphql/mutations/customers/generate_customer_token.graphql";
 import CREATE_CUSTOMER from "@/graphql/mutations/customers/create_customer.graphql";
@@ -42,7 +42,7 @@ export async function generateCustomerToken(email: string, password: string): Pr
         throw new Error(res.errors.map(e => e.message).join("; "));
     }
 
-    if ("data" in res && !res.data?.generateCustomerToken) {
+    if ("data" in res) {
         const token = res.data.generateCustomerToken?.token;
         if (!token) throw new Error("No token returned : Login failed");
         return token;
@@ -106,7 +106,7 @@ export async function getCustomerData(): Promise<User> {
         throw new Error(res.errors.map(e => e.message).join("; "));
     }
 
-    if ('data' in res && !res.data?.customer) {
+    if ('data' in res) {
         return res.data.customer;
     }
 

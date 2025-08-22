@@ -1,6 +1,8 @@
 "use server";
 
+import { createGuestCart } from "@/services/cart";
 
-export function createGuestCart() {
-
+export async function generateGuestCartId() : Promise<string> {
+    return await createGuestCart();
 }
+

@@ -1,5 +1,5 @@
 import GET_FILTERED_PRODUCTS_QUERY from "@/graphql/queries/products/get_filtered_products.graphql";
-import {GraphQLError, GraphQLResponse} from "@/types/graphql";
+import {GraphQLError, GraphQLResponse} from "@/types/graphqlTypes";
 import { ProductItem } from "@/types/product";
 import { print } from "graphql";
 import { type ProductFilter, ProductPageProduct } from "@/types/product";
@@ -131,12 +131,12 @@ const getProductByUrlKey = async (url_key: string): Promise<ProductPageProduct |
 
         const res: GraphQLResponse<ProductPageProductsResponse> = await response.json();
 
-        if ('errors' in res && res.errors?.length) {
+        if ('errors' in res && res.errors.length) {
             console.error("GraphQL errors:", res.errors);
             return null;}
 
         if ('data' in res) {
-            return res.data?.products?.items[0] ?? null;
+            return res.data.products.items[0] ?? null;
         }
 
         throw new Error("Unexpected response format");

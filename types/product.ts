@@ -3,7 +3,16 @@
 type ProductImage = { url: string; label?: string };
 type Price = { value: number; currency: string };
 
+export interface GroupedProductItem {
+    qty?: number; // default quantity suggestion
+    product: {
+        sku: string;
+        name: string;
+    };
+}
+
 export interface ProductItem {
+    __typename?: string; // added to detect product type (SimpleProduct, ConfigurableProduct, GroupedProduct)
     uid: string;
     name: string;
     sku: string;
@@ -29,6 +38,8 @@ export interface ProductItem {
             };
         }[];
     }[];
+    // grouped product specific
+    items?: GroupedProductItem[]; // present when __typename === 'GroupedProduct'
 }
 
 export interface ProductPageProduct extends ProductItem {
@@ -36,6 +47,7 @@ export interface ProductPageProduct extends ProductItem {
     meta_description?: string;
     meta_keyword?: string;
     media_gallery: ProductImage[];
+    __typename: string;
 }
 
 export type ProductPrice = {

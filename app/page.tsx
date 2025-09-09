@@ -1,4 +1,4 @@
-import headerImage from '../public/headerImage.jpg';
+import headerImage from '../public/headerImage.png';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { getAllCategories } from '@/services/categories';

@@ -5,10 +5,17 @@ import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {Separator} from "@/components/ui/separator";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
-import {useCartDispatch} from "@/context/cartContext";
+import {useCart} from "@/context/cartContext";
+import {useState} from "react";
+import { Input } from "@/components/ui/input";
 
 export default function ProductInfo({product}: { product: ProductPageProduct }) {
-    const cart = useCartDispatch();
+    const { addToCart, loading, error } = useCart();
+    const [quantity, setQuantity] = useState<number>(1);
+
+    const productType : string = product.__typename;
+    const isSimple = productType === 'SimpleProduct';
+
     const regular = product.price_range.minimum_price.regular_price;
     const final = product.price_range.minimum_price.final_price;
     const isDiscounted = final.value < regular.value;
@@ -30,8 +37,7 @@ export default function ProductInfo({product}: { product: ProductPageProduct }) 
                 <span className="text-2xl font-bold">{final.value.toFixed(2)} {final.currency}</span>
                 {isDiscounted && (
                     <>
-                        <span
-                            className="text-muted-foreground line-through">{regular.value.toFixed(2)} {regular.currency}</span>
+                        <span className="text-muted-foreground line-through">{regular.value.toFixed(2)} {regular.currency}</span>
                         <Badge variant="destructive">Sale</Badge>
                     </>
                 )}
@@ -39,24 +45,32 @@ export default function ProductInfo({product}: { product: ProductPageProduct }) 
 
             <Separator/>
 
-            {/* Configurable Options would go here if needed */}
-
-            {/* Add to Cart */}
-            <Button size="lg" className="w-full md:w-auto"
+            {/* Add to Cart Form */}
+            <div className="flex items-center gap-3">
+                <Input
+                    type="number"
+                    onChange={(e) => setQuantity(Math.max(1, Math.min(99, Number(e.target.value))))}
+                    value={quantity}
+                    min={1}
+                    max={99}
+                    className="w-24"
+                />
+                <Button
+                    size="lg"
+                    className="w-full md:w-auto"
+                    disabled={loading || !isSimple || quantity < 1}
                     onClick={async () => {
-                        cart({
-                            type: "ADD_ITEM", payload: {
-                                uid: product.uid,
-                                sku: product.sku,
-                                name: product.name,
-                                price: final.value,
-                                thumbnail: product.thumbnail?.url || "",
-                                quantity: 1
-                            }
-                        });
-                    }}>
-                Add to Cart
-            </Button>
+                        if (!isSimple || quantity < 1) return;
+                        await addToCart(product.sku, quantity);
+                    }}
+                >
+                    {!isSimple ? `Unsupported (${productType})` : (loading ? 'Adding...' : 'Add to Cart')}
+                </Button>
+            </div>
+            {!isSimple && (
+                <p className="text-xs text-amber-600">Adding {productType.replace('Product','').toLowerCase()} products not implemented yet.</p>
+            )}
+            {error && <p className="text-sm text-red-500" role="alert">{error}</p>}
 
             {/* Product Info */}
             <Accordion type="single" collapsible className="mt-6">

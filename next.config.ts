@@ -14,8 +14,7 @@ const nextConfig: NextConfig = {
     },
     images: {
         remotePatterns: [
-            new URL('http://magento.local/**'),
-            new URL("https://dummyimage.com")
+            new URL('https://magento.magedev.tech/**')
         ],
     },
 };

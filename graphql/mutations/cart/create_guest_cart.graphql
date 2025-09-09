@@ -2,6 +2,78 @@ mutation {
     createGuestCart {
         cart {
             id
+            prices {
+                subtotal_including_tax {
+                    currency
+                    value
+                }
+                applied_taxes {
+                    amount {
+                        value
+                        currency
+                    }
+                    label
+                }
+                discounts {
+                    amount {
+                        value
+                        currency
+                    }
+                    applied_to
+                    coupon {
+                        code
+                    }
+                }
+                grand_total {
+                    value
+                    currency
+                }
+                grand_total_excluding_tax {
+                    value
+                    currency
+                }
+                subtotal_including_tax {
+                    value
+                    currency
+                }
+                subtotal_with_discount_excluding_tax {
+                    value
+                    currency
+                }
+                subtotal_excluding_tax {
+                    value
+                    currency
+                }
+            }
+            itemsV2 {
+                items {
+                    uid
+                    quantity
+                    is_available
+                    not_available_message
+                    quantity
+                    product {
+                        sku
+                        name
+                        url_key
+                        thumbnail {
+                            url
+                            label
+                            disabled
+                        }
+                    }
+                    errors {
+                        code
+                        message
+                    }
+                }
+            }
+            total_quantity
+            gift_message {
+                message
+                from
+                to
+            }
         }
     }
 }

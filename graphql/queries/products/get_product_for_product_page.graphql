@@ -2,6 +2,7 @@ query GetProductForProductPage($filter: ProductAttributeFilterInput) {
     products(filter: $filter) {
         total_count
         items {
+            __typename
             meta_title
             meta_description
             meta_keyword
@@ -51,6 +52,15 @@ query GetProductForProductPage($filter: ProductAttributeFilterInput) {
                                 thumbnail
                             }
                         }
+                    }
+                }
+            }
+            ... on GroupedProduct {
+                items {
+                    qty
+                    product {
+                        sku
+                        name
                     }
                 }
             }

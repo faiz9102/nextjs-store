@@ -1,6 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useReducer, type Dispatch } from 'react';
+import React, { createContext, useContext, useEffect, useReducer } from 'react';
+import { initializeCart, addProductToCart, updateCartItemQty } from '@/app/actions/cart';
+import type { CustomerCart } from '@/types/cart';
 
 export type CartItem = {
     uid: string;
@@ -9,76 +11,127 @@ export type CartItem = {
     price: number;
     quantity: number;
     thumbnail: string;
+    __typename: string;
 };
 
-type CartState = {
+interface CartContextValue {
     items: CartItem[];
-};
+    totalQuantity: number;
+    addToCart: (sku: string, quantity?: number) => Promise<void>;
+    updateCartItem: (uid: string, quantity: number) => Promise<void>;
+    loading: boolean;
+    error: string | null;
+}
 
-type CartAction =
-    | { type: 'ADD_ITEM'; payload: CartItem }
-    | { type: 'REMOVE_ITEM'; payload: { uid: string } }
-    | { type: 'CLEAR_CART' };
+interface InternalState {
+    items: CartItem[];
+    loading: boolean;
+    error: string | null;
+}
 
-const CartContext = createContext<CartState | undefined>(undefined);
-const CartDispatchContext = createContext<Dispatch<CartAction> | undefined>(undefined);
+type Action =
+    | { type: 'SET_ITEMS'; payload: CartItem[] }
+    | { type: 'SET_LOADING'; payload: boolean }
+    | { type: 'SET_ERROR'; payload: string | null }
+    | { type: 'CLEAR_ERROR' };
 
-function cartReducer(state: CartState, action: CartAction): CartState {
+const CartContext = createContext<CartContextValue | undefined>(undefined);
+
+function reducer(state: InternalState, action: Action): InternalState {
     switch (action.type) {
-        case 'ADD_ITEM':
-            return { ...state, items: addItem(state.items, action.payload) };
-        case 'REMOVE_ITEM':
-            return { ...state, items: removeItem(state.items, action.payload) };
-        case 'CLEAR_CART':
-            return { ...state, items: clearCart() };
+        case 'SET_ITEMS':
+            return { ...state, items: action.payload };
+        case 'SET_LOADING':
+            return { ...state, loading: action.payload };
+        case 'SET_ERROR':
+            return { ...state, error: action.payload };
+        case 'CLEAR_ERROR':
+            return { ...state, error: null };
         default:
-            // Exhaustive check to help TypeScript catch unhandled actions
-            const _exhaustive: never = action;
-            throw new Error('Unknown action');
+            return state; // exhaustive by design
     }
+}
+
+function mapServerCartToItems(cart: CustomerCart): CartItem[] {
+    return cart.itemsV2.items.map(i => ({
+        uid: i.uid,
+        sku: i.product.sku,
+        name: i.product.name,
+        price: i.prices?.price?.value ?? 0,
+        quantity: i.quantity,
+        thumbnail: i.product.thumbnail?.url || '',
+        __typename: i.__typename
+    }));
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-    const [state, dispatch] = useReducer(cartReducer, { items: [] });
-    return (
-        <CartContext.Provider value={state}>
-            <CartDispatchContext.Provider value={dispatch}>{children}</CartDispatchContext.Provider>
-        </CartContext.Provider>
-    );
-}
+    const [state, dispatch] = useReducer(reducer, { items: [], loading: false, error: null });
 
-export function useCart(): CartState {
-    const cart = useContext(CartContext);
-    if (!cart) throw new Error('useCart must be used within CartProvider');
-    return cart;
-}
+    useEffect(() => {
+        initializeCart().catch(err => {
+            console.error('Failed to initialize cart', err);
+            dispatch({ type: 'SET_ERROR', payload: 'Failed to initialize cart' });
+        });
+    }, []);
 
-export function useCartDispatch(): Dispatch<CartAction> {
-    const cart = useContext(CartDispatchContext);
-    if (!cart) throw new Error('useCartDispatch must be used within CartProvider');
-    return cart;
-}
+    const addToCart = async (sku: string, quantity: number = 1) => {
+        dispatch({ type: 'SET_LOADING', payload: true });
+        dispatch({ type: 'CLEAR_ERROR' });
+        try {
+            const serverCart = await addProductToCart(sku, quantity);
+            const mapped = mapServerCartToItems(serverCart);
+            dispatch({ type: 'SET_ITEMS', payload: mapped });
+        } catch (e: unknown) {
+            const message = e instanceof Error ? e.message : 'Failed to add to cart';
+            dispatch({ type: 'SET_ERROR', payload: message });
+        } finally {
+            dispatch({ type: 'SET_LOADING', payload: false });
+        }
+    };
 
-function addItem(cartItems: CartItem[], payload: CartItem): CartItem[] {
-    const existingItemIndex = cartItems.findIndex((item) => item.uid === payload.uid);
+    const updateCartItem = async (uid : string , quantity : number) => {
+        dispatch({ type: 'SET_LOADING', payload: true });
+        dispatch({ type: 'CLEAR_ERROR' });
 
-    if (existingItemIndex >= 0) {
-        // Create a new array with the updated item
-        return cartItems.map((item, index) =>
-            index === existingItemIndex
-                ? { ...item, quantity: item.quantity + payload.quantity }
-                : item
-        );
+        try {
+            if (!uid) {
+                dispatch({ type: 'SET_ERROR', payload : 'Invalid item identifier' });
+                return; // early exit
+            }
+
+            if (!Number.isFinite(quantity) || quantity < 1) {
+                dispatch({ type: 'SET_ERROR', payload : 'Invalid quantity' });
+                return; // early exit
+            }
+
+            const serverCart = await updateCartItemQty(uid, quantity);
+            const mapped = mapServerCartToItems(serverCart);
+
+            dispatch({ type: 'SET_ITEMS', payload: mapped });
+        }
+        catch (e: unknown) {
+            const message = e instanceof Error ? e.message : 'Failed to update cart';
+            dispatch({ type: 'SET_ERROR', payload: message });
+        }
+        finally {
+            dispatch({ type: 'SET_LOADING', payload: false });
+        }
     }
 
-    // If item doesn't exist, add it to the cart
-    return [...cartItems, payload];
+    const value: CartContextValue = {
+        items: state.items,
+        totalQuantity: state.items.reduce((acc, i) => acc + i.quantity, 0),
+        addToCart,
+        updateCartItem,
+        loading: state.loading,
+        error: state.error,
+    };
+
+    return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
-function removeItem(cartItems: CartItem[], payload: { uid: string }): CartItem[] {
-    return cartItems.filter((item) => item.uid !== payload.uid);
-}
-
-function clearCart(): CartItem[] {
-    return [];
+export function useCart(): CartContextValue {
+    const ctx = useContext(CartContext);
+    if (!ctx) throw new Error('useCart must be used within CartProvider');
+    return ctx;
 }

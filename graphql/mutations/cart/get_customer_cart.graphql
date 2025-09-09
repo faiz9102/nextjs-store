@@ -1,0 +1,94 @@
+query {
+    customerCart {
+        id
+        prices {
+            subtotal_including_tax {
+                value
+                currency
+            }
+            subtotal_excluding_tax {
+                value
+                currency
+            }
+            subtotal_with_discount_excluding_tax {
+                value
+                currency
+            }
+            grand_total {
+                value
+                currency
+            }
+            grand_total_excluding_tax {
+                value
+                currency
+            }
+            applied_taxes {
+                amount {
+                    value
+                    currency
+                }
+                label
+            }
+            discounts {
+                amount {
+                    value
+                    currency
+                }
+                applied_to
+                coupon {
+                    code
+                }
+            }
+        }
+        itemsV2 {
+            items {
+                uid
+                quantity
+                is_available
+                not_available_message
+                product {
+                    sku
+                    name
+                    url_key
+                    thumbnail {
+                        url
+                        label
+                        disabled
+                    }
+                }
+                prices {
+                    price {
+                        value
+                        currency
+                    }
+                    row_total {
+                        value
+                        currency
+                    }
+                    price_including_tax {
+                        value
+                        currency
+                    }
+                    row_total_including_tax {
+                        value
+                        currency
+                    }
+                    total_item_discount {
+                        value
+                        currency
+                    }
+                }
+                errors {
+                    code
+                    message
+                }
+            }
+        }
+        total_quantity
+        gift_message {
+            message
+            from
+            to
+        }
+    }
+}

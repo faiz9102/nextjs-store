@@ -1,4 +1,4 @@
-mutation CreateCustomer($input: CustomerCreateInput!) {
+mutation CreateCustomer($input: CustomerInput!) {
   createCustomer(input: $input) {
     customer {
       id

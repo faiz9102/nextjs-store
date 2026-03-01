@@ -4,7 +4,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import React from "react";
-import ContextProvders from "@/app/Providers";
+import ContextProviders from "@/app/Providers";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -28,7 +28,7 @@ export default async function RootLayout({
 }>) {
     return (
         <html lang="en" className="scroll-smooth overflow-y-auto" style={{scrollbarGutter: "stable"}}>
-            <ContextProvders>
+            <ContextProviders>
             <body
                 className={`
                 ${geistSans.className}
@@ -70,7 +70,7 @@ export default async function RootLayout({
                 </main>
                 <Footer/>
             </body>
-        </ContextProvders>
+        </ContextProviders>
         </html>
     );
 }

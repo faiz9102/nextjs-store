@@ -4,8 +4,10 @@ import ProductPage from "./ProductPage";
 
 export const revalidate = 60; // Revalidate SSG every 60s
 
-export default async function Page({ params }: { params: { slug: string } }) {
-    const product = await getProductByUrlKey(await params.slug);
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+
+    const product = await getProductByUrlKey(slug);
 
     if (!product) return notFound();
 

@@ -9,7 +9,7 @@ type GraphQLError = {
     message: string;
     locations?: { line: number; column: number }[];
     path?: (string | number)[];
-    extensions?: Record<string, any>;
+    extensions?: Record<string, unknown>;
 };
 
 const client = new ApolloClient({

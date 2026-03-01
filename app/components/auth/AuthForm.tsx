@@ -75,8 +75,8 @@ export default function AuthForm() {
             const formData = new FormData(e.currentTarget);
             await loginUser(formData);
             router.refresh();
-        } catch (e : any) {
-            setError(e.message || 'Login failed. Please try again.');
+        } catch (e: unknown) {
+            setError(e instanceof Error ? e.message : 'Login failed. Please try again.');
         } finally {
             setLoading(false);
         }

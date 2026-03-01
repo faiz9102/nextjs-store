@@ -18,7 +18,7 @@ import {isCategoryActive, useNavigation} from './navigation/navigation-utils';
 import {useAuth} from "@/context/authContext";
 
 export default function MobileMenu({categories}: { categories: CategoryItem[] }) {
-    const {isLoggedIn, user, logoutUser} = useAuth();
+    const {isLoggedIn, logoutUser} = useAuth();
     const {
         pathname,
         isSearchOpen,

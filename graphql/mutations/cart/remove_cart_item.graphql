@@ -1,0 +1,37 @@
+mutation RemoveCartItem($cartId: String!, $itemUid: ID!) {
+    removeItemFromCart(input: { cart_id: $cartId, cart_item_uid: $itemUid }) {
+        cart {
+            ...CartFields
+        }
+    }
+}
+
+fragment CartFields on Cart {
+    id
+    itemsV2 {
+        items {
+            uid
+            quantity
+            product {
+                name
+                sku
+                thumbnail {
+                    url
+                }
+            }
+            prices {
+                row_total {
+                    value
+                    currency
+                }
+            }
+        }
+        total_count
+    }
+    prices {
+        grand_total {
+            value
+            currency
+        }
+    }
+}

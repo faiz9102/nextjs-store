@@ -1,6 +1,5 @@
-import { Instagram } from 'lucide-react';
-import { Facebook } from 'lucide-react';
-import { Youtube } from 'lucide-react';
+import Link from 'next/link';
+import { Instagram, Facebook, Youtube } from 'lucide-react';
 
 export default function Footer() {
     return (
@@ -11,10 +10,10 @@ export default function Footer() {
                 <div>
                     <h3 className="font-semibold text-gray-900 mb-4">Shop</h3>
                     <ul className="space-y-2">
-                        <li><a href="/category/whats-new" className="hover:underline">What's New</a></li>
-                        <li><a href="/category/women" className="hover:underline">Women</a></li>
-                        <li><a href="/category/men" className="hover:underline">Men</a></li>
-                        <li><a href="/category/sale" className="hover:underline">Sale</a></li>
+                        <li><Link href="/category/whats-new" className="hover:underline">What&apos;s New</Link></li>
+                        <li><Link href="/category/women" className="hover:underline">Women</Link></li>
+                        <li><Link href="/category/men" className="hover:underline">Men</Link></li>
+                        <li><Link href="/category/sale" className="hover:underline">Sale</Link></li>
                     </ul>
                 </div>
 
@@ -22,10 +21,10 @@ export default function Footer() {
                 <div>
                     <h3 className="font-semibold text-gray-900 mb-4">Customer Care</h3>
                     <ul className="space-y-2">
-                        <li><a href="/help/shipping" className="hover:underline">Shipping</a></li>
-                        <li><a href="/help/returns" className="hover:underline">Returns</a></li>
-                        <li><a href="/help/contact" className="hover:underline">Contact Us</a></li>
-                        <li><a href="/help/faq" className="hover:underline">FAQ</a></li>
+                        <li><Link href="/help/shipping" className="hover:underline">Shipping</Link></li>
+                        <li><Link href="/help/returns" className="hover:underline">Returns</Link></li>
+                        <li><Link href="/help/contact" className="hover:underline">Contact Us</Link></li>
+                        <li><Link href="/help/faq" className="hover:underline">FAQ</Link></li>
                     </ul>
                 </div>
 
@@ -33,9 +32,9 @@ export default function Footer() {
                 <div>
                     <h3 className="font-semibold text-gray-900 mb-4">About</h3>
                     <ul className="space-y-2">
-                        <li><a href="/about" className="hover:underline">Our Story</a></li>
-                        <li><a href="/sustainability" className="hover:underline">Sustainability</a></li>
-                        <li><a href="/careers" className="hover:underline">Careers</a></li>
+                        <li><Link href="/about" className="hover:underline">Our Story</Link></li>
+                        <li><Link href="/sustainability" className="hover:underline">Sustainability</Link></li>
+                        <li><Link href="/careers" className="hover:underline">Careers</Link></li>
                     </ul>
                 </div>
 
@@ -44,8 +43,8 @@ export default function Footer() {
                     <h3 className="font-semibold text-gray-900 mb-4">Follow Us</h3>
                     <div className="flex space-x-4">
                         <a href="#" aria-label="Instagram" className="hover:text-gray-900"><Instagram /></a>
-                        <a href="#" aria-label="Twitter" className="hover:text-gray-900"><Facebook /></a>
-                        <a href="#" aria-label="Facebook" className="hover:text-gray-900"><Youtube /></a>
+                        <a href="#" aria-label="Facebook" className="hover:text-gray-900"><Facebook /></a>
+                        <a href="#" aria-label="YouTube" className="hover:text-gray-900"><Youtube /></a>
                     </div>
                     <form className="mt-4">
                         <label htmlFor="email" className="sr-only">Subscribe</label>
@@ -66,7 +65,7 @@ export default function Footer() {
             </div>
 
             <div className="border-t border-gray-200 py-6 text-center text-xs text-gray-500">
-                © {new Date().getFullYear()} Faiz. All rights reserved.
+                &copy; {new Date().getFullYear()} Faiz. All rights reserved.
             </div>
         </footer>
     );

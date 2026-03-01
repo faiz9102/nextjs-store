@@ -1,0 +1,42 @@
+mutation UpdateCartItem($cartId: String!, $itemUid: ID!, $qty: Float!) {
+    updateCartItems(
+        input: {
+            cart_id: $cartId
+            cart_items: [{ cart_item_uid: $itemUid, quantity: $qty }]
+        }
+    ) {
+        cart {
+            ...CartFields
+        }
+    }
+}
+
+fragment CartFields on Cart {
+    id
+    itemsV2 {
+        items {
+            uid
+            quantity
+            product {
+                name
+                sku
+                thumbnail {
+                    url
+                }
+            }
+            prices {
+                row_total {
+                    value
+                    currency
+                }
+            }
+        }
+        total_count
+    }
+    prices {
+        grand_total {
+            value
+            currency
+        }
+    }
+}

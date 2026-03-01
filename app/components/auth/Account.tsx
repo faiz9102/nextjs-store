@@ -2,7 +2,7 @@
 
 import "client-only";
 import Link from 'next/link';
-import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
+import {Avatar, AvatarFallback} from '@/components/ui/avatar';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -25,8 +25,12 @@ export function Account() {
     const [initials, setInitials] = useState<string|null>(null);
 
     useEffect(() => {
-        const middleInitial : string|undefined = user?.middlename?.charAt(0).toUpperCase();
-        user ? setInitials(`${user.firstname.charAt(0)}${middleInitial ?? ""}${user.lastname.charAt(0)}`.toUpperCase()) : setInitials(null);
+        if (user) {
+            const middleInitial = user.middlename?.charAt(0).toUpperCase() ?? "";
+            setInitials(`${user.firstname.charAt(0)}${middleInitial}${user.lastname.charAt(0)}`.toUpperCase());
+        } else {
+            setInitials(null);
+        }
     }, [user]);
 
 

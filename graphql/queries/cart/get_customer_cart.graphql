@@ -1,0 +1,32 @@
+# Fetches the authenticated customer's cart — no cart_id needed, scoped to the Bearer token.
+query GetCustomerCart {
+    customerCart {
+        id
+        itemsV2 {
+            items {
+                uid
+                quantity
+                product {
+                    name
+                    sku
+                    thumbnail {
+                        url
+                    }
+                }
+                prices {
+                    row_total {
+                        value
+                        currency
+                    }
+                }
+            }
+            total_count
+        }
+        prices {
+            grand_total {
+                value
+                currency
+            }
+        }
+    }
+}

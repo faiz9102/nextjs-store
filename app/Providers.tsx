@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import React from 'react';
-import {AuthProvider} from '@/context/authContext';
-import {CartProvider} from '@/context/cartContext';
+import React from "react";
+import { CartProvider } from "@/context/cartContext";
+import { AuthProvider } from "@/context/authContext";
 
-export default function Providers({children}: { children: React.ReactNode }) {
-    return (
-        <AuthProvider>
-            <CartProvider>
-                {children}
-            </CartProvider>
-        </AuthProvider>
-    );
+// CartProvider must be the outer wrapper so that AuthProvider (and its
+// loginUser / logoutUser callbacks) can call useCart() to merge/reset the cart.
+export default function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <CartProvider>
+      <AuthProvider>{children}</AuthProvider>
+    </CartProvider>
+  );
 }

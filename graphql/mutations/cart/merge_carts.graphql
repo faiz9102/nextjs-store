@@ -1,0 +1,34 @@
+# mergeCarts transfers items from the guest cart (source_cart_id) into the
+# authenticated customer's cart (destination_cart_id). Requires a Bearer token.
+# destination_cart_id = the customer's active cart ID (obtained via customerCart query).
+mutation MergeCarts($guestCartId: String!, $customerCartId: String!) {
+    mergeCarts(source_cart_id: $guestCartId, destination_cart_id: $customerCartId) {
+        id
+        itemsV2 {
+            items {
+                uid
+                quantity
+                product {
+                    name
+                    sku
+                    thumbnail {
+                        url
+                    }
+                }
+                prices {
+                    row_total {
+                        value
+                        currency
+                    }
+                }
+            }
+            total_count
+        }
+        prices {
+            grand_total {
+                value
+                currency
+            }
+        }
+    }
+}

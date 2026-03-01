@@ -4,6 +4,7 @@ import "client-only";
 import {createContext, ReactNode, useContext, useState, useEffect} from 'react';
 import {type User} from '@/types/customer';
 import {getCustomer, login, logout} from '@/app/actions/auth';
+import {useCart} from '@/context/cartContext';
 
 type AuthContextType = {
     isLoggedIn: boolean;
@@ -26,6 +27,9 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({children}: { children: ReactNode }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState<User | null>(null);
+
+    // Cart operations triggered on login/logout
+    const {mergeWithCustomerCart, resetCart} = useCart();
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -62,6 +66,12 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         }
 
         setUser(customerData.user);
+
+        // Merge the guest cart into the newly-authenticated customer's cart.
+        // mergeWithCustomerCart reads the guest cart ID from localStorage,
+        // calls the server action (which uses the fresh auth cookie), and then
+        // clears localStorage — so no cart ID is left after login.
+        await mergeWithCustomerCart();
     }
 
     async function logoutUser() : Promise<void> {
@@ -73,6 +83,9 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
 
         setIsLoggedIn(false);
         setUser(null);
+
+        // Trash the customer cart state and create a fresh guest cart
+        await resetCart();
     }
 
     return (

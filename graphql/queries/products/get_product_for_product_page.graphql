@@ -2,6 +2,7 @@ query GetProductForProductPage($filter: ProductAttributeFilterInput) {
     products(filter: $filter) {
         total_count
         items {
+            __typename
             meta_title
             meta_description
             meta_keyword
@@ -39,12 +40,44 @@ query GetProductForProductPage($filter: ProductAttributeFilterInput) {
                     label
                     values {
                         label
+                        use_default_value
+                        store_label
+                        uid
                         swatch_data {
                             value
                             ... on ImageSwatchData {
                                 thumbnail
+                                value
+                            }
+
+                            ... on TextSwatchData {
+                                value
+                            }
+
+                            ... on ColorSwatchData {
+                                value
+                            }
+
+                            ... on SwatchDataInterface {
+                                value
                             }
                         }
+                    }
+                }
+                # Each variant maps selected option uids → a concrete child product
+                variants {
+                    product {
+                        sku
+                        stock_status
+                        media_gallery {
+                            url
+                            label
+                        }
+                    }
+                    # attributes.uid matches configurable_options.values.uid
+                    attributes {
+                        code
+                        uid
                     }
                 }
             }

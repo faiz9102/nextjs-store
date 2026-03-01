@@ -2,6 +2,7 @@ query GetFilteredProducts($filter: ProductAttributeFilterInput) {
     products(filter: $filter) {
         total_count
         items {
+            __typename
             uid
             name
             sku
@@ -41,6 +42,7 @@ query GetFilteredProducts($filter: ProductAttributeFilterInput) {
                     attribute_code
                     label
                     values {
+                        uid
                         label
                         swatch_data {
                             value
